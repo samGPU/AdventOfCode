@@ -14,5 +14,5 @@
         });
         r.push(h)
     }
-    return r
+    return [r[0], r[1] + 1]
 })()
