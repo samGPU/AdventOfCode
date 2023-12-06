@@ -1,99 +1,112 @@
 (() => {
+    r = [0, 0]
     q = []
     $("pre").innerText.split("\n").forEach((v) => {
         k = v.replaceAll(/[\/*&@+=$%#]/g, '.')
-        b = k.split('.')
-        b = b.filter(x => parseInt(x))
-        b.forEach((k, i) => {
-            b[i] = Math.abs(parseInt(k)).toString()
-        });
+        b = k.split('.').filter(x => parseInt(x))
+        b.forEach((k, i) => { b[i] = Math.abs(parseInt(k)).toString() });
         z = [], e = 0, flip = false
         v.split('').forEach((n, i) => {
             if(parseInt(n) || parseInt(n) == 0) { z.push(b[e]); flip = true } 
-            else if(n !== '.') { z.push(n) } 
+            else if(n !== '.') { if(flip) { e++; flip = false }; z.push(n); } 
             else { z.push('.'); if(flip) { e++; flip = false } }
-            // console.log(z)
         })
-        // console.log(z)
         q.push(z)
     });
-    // console.log(q)
-    t = 0
     for(let i = 0; i < q.length - 1; i++) {
-        console.log(q[i])
-        topleft = false
-        topcenter = false
-        bottomleft = false
-        bottomcenter = false
         for(let j = 0; j < q[0].length; j++) {
-            if(q[i][j] !== '.' && !parseInt(q[i][j])) {
-                // console.log(q[i][j])
+            g = []
+            if((q[i][j] !== '.' && q[i][j] !== '0') && !parseInt(q[i][j])) {
                 // top left
-                if(i > 0 && j > 0) {
-                    if(parseInt(q[i-1][j-1])) {
-                        // console.log('Number at top left', q[i][j])
-                        t += parseInt(q[i-1][j-1])
-                        topleft = true
-                    }
+                if(i > 0 && j > 0 && parseInt(q[i-1][j-1])) {
+                    g.push(parseInt(q[i-1][j-1]))
+                    r[0] += parseInt(q[i-1][j-1])
+                    if(q[i-1][j-2] === q[i-1][j-1]) q[i-1][j-2] = '0';
+                    if(q[i-1][j-3] === q[i-1][j-1]) q[i-1][j-3] = '0';
+                    if(q[i-1][j] === q[i-1][j-1]) q[i-1][j] = '0';
+                    if(q[i-1][j+1] === q[i-1][j-1] && q[i-1][j] !== '.') q[i-1][j+1] = '0';
+                    q[i-1][j-1] = '0'
                 }
                 // top
-                if(i > 0 && !topleft) {
-                    if(parseInt(q[i-1][j])) {
-                        // console.log('Number at top', q[i][j])
-                        t += parseInt(q[i-1][j])
-                        topcenter = true
+                if(i > 0 && parseInt(q[i-1][j])) {
+                    g.push(parseInt(q[i-1][j]))
+                    r[0] += parseInt(q[i-1][j])
+                    if(q[i-1][j-1] === q[i-1][j]) {
+                        q[i-1][j-1] = '0';
+                        if(q[i-1][j-2] === q[i-1][j]) q[i-1][j-2] = '0';
                     }
+                    if(q[i-1][j+1] === q[i-1][j]) {
+                        q[i-1][j+1] = '0';
+                        if(q[i-1][j+2] === q[i-1][j]) q[i-1][j+2] = '0';
+                    }
+                    q[i-1][j] = '0'
                 }
                 // top right
-                if(i > 0 && j < q[0].length - 1) {
-                    if(q[i-1][j+1] !== q[i-1][j-1]) {
-                        if(parseInt(q[i-1][j+1] && !topcenter)) {
-                            // console.log('Number at top right', q[i][j])
-                            t += parseInt(q[i-1][j+1])
-                        }
-                    }
+                if(i > 0 && j < q[0].length - 1 && parseInt(q[i-1][j+1])) {
+                    g.push(parseInt(q[i-1][j+1]))
+                    r[0] += parseInt(q[i-1][j+1])
+                    if(q[i-1][j+2] === q[i-1][j+1]) q[i-1][j+2] = '0';
+                    if(q[i-1][j+3] === q[i-1][j+1]) q[i-1][j+3] = '0';
+                    if(q[i-1][j] === q[i-1][j+1]) q[i-1][j] = '0';
+                    if(q[i-1][j-1] === q[i-1][j+1] && q[i-1][j] !== '.') q[i-1][j-1] = '0';
+                    q[i-1][j+1] = '0'
                 }
                 // left
-                if(j > 0) {
-                    if(parseInt(q[i][j-1])) {
-                        // console.log('Number at left', q[i][j])
-                        t += parseInt(q[i][j-1])
-                    }
+                if(j > 0 && parseInt(q[i][j-1])) {
+                    g.push(parseInt(q[i][j-1]))
+                    r[0] += parseInt(q[i][j-1])
+                    if(q[i][j-2] === q[i][j-1]) q[i][j-2] = '0';
+                    if(q[i][j-3] === q[i][j-1]) q[i][j-3] = '0';
+                    q[i][j-1] = '0'
                 }
                 // right
-                if(j < q[0].length - 1) {
-                    if(parseInt(q[i][j+1])) {
-                        // console.log('Number at right', q[i][j])
-                        t += parseInt(q[i][j+1])
-                    }
+                if(j < q[0].length - 1 && parseInt(q[i][j+1])) {
+                    g.push(parseInt(q[i][j+1]))
+                    r[0] += parseInt(q[i][j+1])
+                    if(q[i][j+2] === q[i][j+1]) q[i][j+2] = '0';
+                    if(q[i][j+3] === q[i][j+1]) q[i][j+3] = '0';
+                    q[i][j+1] = '0'
                 }
                 // bottom left
-                if(i < q.length && j > 0) {
-                    if(parseInt(q[i+1][j-1])) {
-                        // console.log('Number at bottom left', q[i][j])
-                        t += parseInt(q[i+1][j-1])
-                        bottomleft = true
-                    }
+                if(i < q.length && j > 0 && parseInt(q[i+1][j-1])) {
+                    g.push(parseInt(q[i+1][j-1]))
+                    r[0] += parseInt(q[i+1][j-1])
+                    if(q[i+1][j-2] === q[i+1][j-1]) q[i+1][j-2] = '0';
+                    if(q[i+1][j-3] === q[i+1][j-1]) q[i+1][j-3] = '0';
+                    if(q[i+1][j] === q[i+1][j-1]) q[i+1][j] = '0';
+                    if(q[i+1][j+1] === q[i+1][j-1] && q[i+1][j] !== '.') q[i+1][j+1] = '0';
+                    q[i+1][j-1] = '0'
+                    
                 }
                 // bottom
-                if(i < q.length && !bottomleft) {
-                    if(parseInt(q[i+1][j])) {
-                        // console.log('Number at bottom', q[i][j])
-                        t += parseInt(q[i+1][j])
-                        bottomcenter = true
+                if(i < q.length && parseInt(q[i+1][j])) {
+                    g.push(parseInt(q[i+1][j]))
+                    r[0] += parseInt(q[i+1][j])
+                    if(q[i+1][j-1] === q[i+1][j]) {
+                        q[i+1][j-1] = '0';
+                        if(q[i+1][j-2] === q[i+1][j]) q[i+1][j-2] = '0';
                     }
+                    if(q[i+1][j+1] === q[i+1][j]) {
+                        q[i+1][j+1] = '0';
+                        if(q[i+1][j+2] === q[i+1][j]) q[i+1][j+2] = '0';
+                    }
+                    q[i+1][j] = '0'
                 }
                 // bottom right
-                if(i < q.length && j < q[0].length - 1) {
-                    if(q[i+1][j+1] !== q[i+1][j-1]) {
-                        if(parseInt(q[i+1][j+1]) && !bottomcenter) {
-                            // console.log('Number at bottom right', q[i][j])
-                            t += parseInt(q[i+1][j+1])
-                        }
-                    }
+                if(i < q.length && j < q[0].length - 1 && parseInt(q[i+1][j+1])) {
+                    g.push(parseInt(q[i+1][j+1]))
+                    r[0] += parseInt(q[i+1][j+1])
+                    if(q[i+1][j+2] === q[i+1][j+1]) q[i+1][j+2] = '0';
+                    if(q[i+1][j+3] === q[i+1][j+1]) q[i+1][j+3] = '0';
+                    if(q[i+1][j] === q[i+1][j+1]) q[i+1][j+1] = '0';
+                    if(q[i+1][j-1] === q[i+1][j+1] && q[i+1][j] !== '.') q[i+1][j-1] = '0';
+                    q[i+1][j+1] = '0'
                 }
+            }
+            if(g.length === 2 && q[i][j] === '*') {
+                r[1] += (g[0] * g[1])
             }
         }
     }
-    return [t, 0]
+    return r
 })()
