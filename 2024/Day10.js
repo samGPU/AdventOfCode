@@ -1,5 +1,5 @@
 (() => {
-    x = document.querySelector('#pre').innerHTML.split('\n').map(e => e.split(''));
+    x = document.querySelector('pre').innerHTML.split('\n').map(e => e.split(''));
     let h = []; x.forEach((row, i) => row.forEach((e, j) => e == '0' ? h.push([i, j]) : 0));
     x = x.map(row => row.map(e => parseInt(e)));
     findPaths = (grid, s) => {
